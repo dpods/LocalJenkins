@@ -47,4 +47,14 @@ networks:
 
 volumes:
   jenkins_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./jenkins_data
   jenkins_docker_certs:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./jenkins_certs
