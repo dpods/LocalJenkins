@@ -20,12 +20,14 @@ services:
     volumes:
       - jenkins_data:/var/jenkins_home
       - jenkins_docker_certs:/certs/client:ro
+      - ${HOME}/.aws:/var/jenkins_home/.aws:ro
     networks:
       - jenkins
     env_file:
       - .env
 
   docker:
+    container_name: jenkins_docker
     image: docker:dind
     privileged: true
     networks:
@@ -33,7 +35,7 @@ services:
     environment:
       - DOCKER_TLS_CERTDIR=/certs
     ports:
-    - 2376:2376
+      - 2376:2376
     volumes:
       - jenkins_data:/var/jenkins_home
       - jenkins_docker_certs:/certs/client
