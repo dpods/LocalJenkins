@@ -2,9 +2,14 @@ FROM jenkins/jenkins:lts
 
 USER root
 
-RUN apt-get update && apt-get install -y apt-transport-https \
-       ca-certificates curl gnupg2 \
-       software-properties-common
+RUN apt-get update && apt-get install -y \
+        apt-transport-https \
+        build-essential \
+        ca-certificates \
+        curl \
+        gnupg2 \
+        openssh-client \
+        software-properties-common
 
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 

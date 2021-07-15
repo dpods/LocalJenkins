@@ -1,0 +1,56 @@
+#!/bin/sh
+
+env_up() {
+    echo "Starting ssh-agent"
+    docker run -u 1000 -d -v ssh:/ssh --name=ssh-agent whilp/ssh-agent:latest > /dev/null 2>&1
+    docker run -u 1000 --rm -v ssh:/ssh -v $HOME:$HOME -it whilp/ssh-agent:latest ssh-add $HOME/.ssh/cobalt.pem
+
+    docker-compose \
+        -f docker-compose.yml \
+        up
+}
+
+env_down() {
+    docker-compose \
+        -f docker-compose.yml \
+        down --remove-orphans
+}
+
+env_destroy() {
+    docker-compose \
+        -f docker-compose.yml \
+        down -v
+
+    # clean up ssh-agent
+    docker rm -f ssh-agent || true
+    docker volume rm ssh || true
+}
+
+env_build() {
+    docker-compose \
+        -f docker-compose.yml \
+        build
+}
+
+case "$1" in
+    "up")
+        env_up
+        exit 0
+        ;;
+    "down")
+        env_down
+        exit 0
+        ;;
+    "destroy")
+        env_destroy
+        exit 0
+        ;;
+    "build")
+        env_build
+        exit 0
+        ;;
+   *)
+        echo "Usage: {up}" >&2
+        exit 3
+        ;;
+esac
